@@ -1,7 +1,7 @@
 import xml.etree.ElementTree as ET
 
-# filename = input('Please enter filename: ')
-filename = 'LRG_62.xml'
+filename = input('Please enter filename: ')
+# filename = 'LRG_62.xml'
 print(filename)
 
 tree = ET.parse(filename)
