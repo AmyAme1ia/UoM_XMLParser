@@ -23,7 +23,7 @@ def check_public(root):
         return(get_data(root))
 
 
-def get_data(root,tree):
+def get_data(root):
     ''' extract data from xml and store in a pandas dataframe (and other variables) '''
     # define an empty dataframe to accept parsed exon data relative to lrg coordinate from xml file
     df_exon_rel = pd.DataFrame(columns=['exon_no','start','end'])
@@ -46,6 +46,9 @@ def get_data(root,tree):
     # enter data from lists into pandas dataframe
     for i in range(len(ex_label)):
         df_exon_rel.loc[df_exon_rel.shape[0]] = [ex_label[i],ex_start[i],ex_end[i]]
+
+    #df_exon_rel['seq'] = genomic_sequence[df_exon_rel.start:df_exon_rel.end]
+    
     
     # check that coordinates are in correct spatial orientation
     for j in range(len(df_exon_rel['start'])):
@@ -53,6 +56,8 @@ def get_data(root,tree):
     
     # return dataframe for further analysis
     return(df_exon_rel)
+
+#################################################ß    
     
 print(xml_checker('LRG_62.xml'))
 #print(xml_checker('wrong.txt'))
