@@ -62,8 +62,9 @@ def get_data(root):
 def genome_GRCh37(df_exon_rel, root):
     ''' Extract exome genome cordinates for build GRC37'''
 # start gen pos - 5000 + data frame  nee chr start and end
-    lrg_id = root.findall('./updatable_annotation/annotationset/mapping')[0].text
-    print('lrg_id')
+    fred = root.findall('updatable_annotation/annotation_set[@type="lrg"]/mapping')
+# fred = root.findall('mapping/..[@type ="lrg"]')
+    print(fred)
 
            
 
