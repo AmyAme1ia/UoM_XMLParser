@@ -11,7 +11,15 @@ def check_file(file_name):
     tree = ET.parse(file_name)
     root = tree.getroot()
     assert root.tag == 'lrg', 'Input file must be an LRG'
-    return(root)
+    return(check_public(root))
 
-print(xml_checker('LRG_62_dud.xml'))
+def check_public(root):
+    ''' Checks that the LRG file is a public file. for pending files issues a warning regarding completeness'''
+    if root.findall("./fixed_annotation/.")[0].tag == 'source':
+        return(root)
+    else:
+        print ('Warning! this is a pending LRG file and may be subject to modification')
+        return(root)
+
+print(xml_checker('LRG_62.xml'))
 #print(xml_checker('wrong.txt'))
