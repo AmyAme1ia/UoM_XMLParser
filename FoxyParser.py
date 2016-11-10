@@ -1,4 +1,4 @@
-# Python 3.5
+    # Python 3.5
 import xml.etree.ElementTree as ET
 import pandas as pd
 
@@ -55,9 +55,18 @@ def get_data(root):
         assert int(df_exon_rel['end'].loc[j]) > int(df_exon_rel['start'].loc[j]), 'the exon coordinate order may be wrong'
     
     # return dataframe for further analysis
-    return(df_exon_rel)
 
-#################################################ß    
+    return(genome_GRCh37(df_exon_rel, root))
+
+
+def genome_GRCh37(df_exon_rel, root):
+    ''' Extract exome genome cordinates for build GRC37'''
+# start gen pos - 5000 + data frame  nee chr start and end
+    lrg_id = root.findall('./updatable_annotation/annotationset/mapping')[0].text
+    print('lrg_id')
+
+           
+
     
 print(xml_checker('LRG_62.xml'))
 #print(xml_checker('wrong.txt'))
