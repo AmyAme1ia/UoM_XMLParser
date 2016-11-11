@@ -110,7 +110,7 @@ def genome_loc(df_exon_rel, root):
 
     return df_gen_build
 
-def leg (df_gen_build, df_exon_rel)
+def leg (df_gen_build, df_exon_rel):
     '''Location of Exome in Genome'''
     
     for i in range(len(df_gen_build.Build)):
@@ -133,7 +133,9 @@ def leg (df_gen_build, df_exon_rel)
                 # genomic end loc + 5001 - lrg start pos
                 exon_pos_s = [int(g_loc_end) + 5001 - int(lrg_loc_s[x]) for x in range(len(lrg_loc_s))]
                 print(exon_pos_s) 
-                
+                df_exon_rel[(df_gen_build.Build.loc[i])+'_start'] = exon_pos_s
+                print(df_exon_rel)
+                return df_exon_rel
 
             elif str(df_gen_build.strand.loc[i]) == "1":
                 print('on Forward strand')
@@ -147,6 +149,9 @@ def leg (df_gen_build, df_exon_rel)
                 # genomic end loc + 5001 - lrg start pos
                 exon_pos_s = [int(g_loc_end) -5001 + int(lrg_loc_s[x]) for x in range(len(lrg_loc_s))]
                 print(exon_pos_s) 
+                df_exon_rel[(df_gen_build.Build.loc[i])+'_start'] = exon_pos_s
+                print(df_exon_rel)
+                return df_exon_rel
                
             else:
                 print("Problem! DNA should only have two strands, this has more, so cant be DNA")
@@ -170,6 +175,10 @@ def main(infile):
     # run checks on file type
     checked = (xml_checker(infile)) 
     # checked = root
+    # find LRG id for gene
+    lrg_id = checked.findall('./fixed_annotation/id')[0].text
+    # find gene symbol
+    symbol = checked.findall('./updatable_annotation/annotation_set/features/gene/symbol')[0].attrib['name']
     # retive relative exon data from LRG
     exon_data = get_data(checked)
     # exon_data is the df_exon_rel dataframe
@@ -183,7 +192,7 @@ def main(infile):
     print(exon_data_with_seq)
     print()
     print(genome_build)
-    
+
     return exon_data
 
 main('LRG_62.xml') # NEED TO CHANGE SO NOT HARD CODED
