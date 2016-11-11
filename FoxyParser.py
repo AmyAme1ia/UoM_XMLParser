@@ -48,18 +48,35 @@ def get_data(root):
         df_exon_rel.loc[df_exon_rel.shape[0]] = [ex_label[i],ex_start[i],ex_end[i]]
 
     #df_exon_rel['seq'] = genomic_sequence[df_exon_rel.start:df_exon_rel.end]
-    
-    
     # check that coordinates are in correct spatial orientation
     for j in range(len(df_exon_rel['start'])):
         assert int(df_exon_rel['end'].loc[j]) > int(df_exon_rel['start'].loc[j]), 'the exon coordinate order may be wrong'
     
     # return dataframe for further analysis
-    
     print('done get data')
 
     return(df_exon_rel)
 
+def add_sequence(df_exon_rel,root):
+    ''' find genomic sequence for each exon '''
+    # find genomic sequence by LRG coordinates
+    genomic_sequence = root.findall('./fixed_annotation/sequence')[0].text.upper()
+    # check that the genomic sequence conforms to standard DNA bases
+    assert set(genomic_sequence) == set(['A', 'C', 'T', 'G']), 'Unexpected characters found in genomic sequence.'
+    # add temporary indexing columns to df for sequence slice
+    df_exon_rel['int_start'] = df_exon_rel.start.astype(int)
+    df_exon_rel['int_end'] = df_exon_rel.end.astype(int)
+    # calulate exon length and add to dataframe
+    df_exon_rel['exon_length'] = df_exon_rel['int_end'] - df_exon_rel['int_start']
+    df_exon_rel['seq'] = [(genomic_sequence[
+        (df_exon_rel.int_start.loc[i]):(df_exon_rel.int_end.loc[i])]) for i in range(len(df_exon_rel.start))]
+    # remove intermediary indexing columns
+    df_exon_rel = df_exon_rel[['exon_no','start','end','exon_length','seq']]
+    # check that sequence legth matches the exon length
+    for i in range(len(df_exon_rel.start)):
+        len(df_exon_rel.seq.loc[i]) == df_exon_rel.exon_length.loc[i],
+        "Sequence length doesn't match exon length"
+    return df_exon_rel
 
 def genome_loc(df_exon_rel, root):
     ''' Extract exome genome cordinates for build GRC37'''
@@ -113,9 +130,14 @@ def main(infile):
     # retive relative exon data from LRG
     exon_data = get_data(checked)
     # exon_data is the df_exon_rel dataframe
+    # calculate exon lengths and get exon sequences
+    exon_data_with_seq = add_sequence(exon_data,checked)
     genome_build = genome_loc(exon_data, checked)
     # genome_build is the df_gen_build dataframe
     print(exon_data)
+    print()
+    print(exon_data_with_seq)
+    print()
     print(genome_build)
     
     return exon_data
