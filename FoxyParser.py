@@ -135,16 +135,16 @@ def leg (df_gen_build, df_exon_rel):
             elif str(df_gen_build.strand.loc[i]) == "1":
                 print('on Forward strand')
                 # generate a list of lrg star positions and a ver for genomic end possition 
-                g_loc_end = df_gen_build.at[i,'g_end']
+                g_loc_start = df_gen_build.at[i,'g_start']
                 lrg_loc_s = []
                 # populate list of lrg possitions
                 for l in range(len(df_exon_rel.exon_no)):
                     lrg_loc_s.append(df_exon_rel.start.loc[l])    
                 # loop through the lrg start list to calculate genomic pos for rev strand
                 # genomic end loc + 5001 - lrg start pos
-                exon_pos_s = [int(g_loc_end) -5001 + int(lrg_loc_s[x]) for x in range(len(lrg_loc_s))]
+                exon_pos_s = [int(g_loc_start) + int(lrg_loc_s[x]) -1 for x in range(len(lrg_loc_s))]
                 df_exon_rel[(df_gen_build.Build.loc[i])+'_start'] = exon_pos_s
-
+                print('genLoc:', df_gen_build.Build.loc[i])
                
             else:
                 print("Problem! DNA should only have two strands, this has more, so cant be DNA")
@@ -225,6 +225,6 @@ def main(infile):
 
     return exon_data
 
-main('LRG_62.xml') # NEED TO CHANGE SO NOT HARD CODED
+main('LRG_517.xml') # NEED TO CHANGE SO NOT HARD CODED
     
 
