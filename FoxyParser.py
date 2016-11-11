@@ -1,6 +1,8 @@
     # Python 3.5
 import xml.etree.ElementTree as ET
 import pandas as pd
+import warnings
+warnings.filterwarnings('ignore')
 
 def xml_checker(file_name):
     '''Runs a check to confirm a .xml file has been entered'''
@@ -118,8 +120,6 @@ def leg (df_gen_build, df_exon_rel):
         
         # checks that the genome build is canonical
         if 'assembly' in str(df_gen_build.type.loc[i]):
-            print(df_gen_build.Build.loc[i]) # use loc to fix row loctation
-            print('yay')
             # check the stand orientation
             if str(df_gen_build.strand.loc[i]) == "-1":
                 print('on reverse strand')
@@ -132,11 +132,8 @@ def leg (df_gen_build, df_exon_rel):
                 # loop through the lrg start list to calculate genomic pos for rev strand
                 # genomic end loc + 5001 - lrg start pos
                 exon_pos_s = [int(g_loc_end) + 5001 - int(lrg_loc_s[x]) for x in range(len(lrg_loc_s))]
-                print(exon_pos_s) 
                 df_exon_rel[(df_gen_build.Build.loc[i])+'_start'] = exon_pos_s
-                print(df_exon_rel)
-                return df_exon_rel
-
+            
             elif str(df_gen_build.strand.loc[i]) == "1":
                 print('on Forward strand')
                 # generate a list of lrg star positions and a ver for genomic end possition 
@@ -148,16 +145,52 @@ def leg (df_gen_build, df_exon_rel):
                 # loop through the lrg start list to calculate genomic pos for rev strand
                 # genomic end loc + 5001 - lrg start pos
                 exon_pos_s = [int(g_loc_end) -5001 + int(lrg_loc_s[x]) for x in range(len(lrg_loc_s))]
-                print(exon_pos_s) 
                 df_exon_rel[(df_gen_build.Build.loc[i])+'_start'] = exon_pos_s
-                print(df_exon_rel)
-                return df_exon_rel
+
                
             else:
                 print("Problem! DNA should only have two strands, this has more, so cant be DNA")
-        else:
-            print('boo', df_gen_build.type.loc[i])
+    return df_exon_rel
+
+def leg2 (df_gen_build, df_exon_rel):
+    '''Location of Exome in Genome'''
     
+    for i in range(len(df_gen_build.Build)):
+        print("moo")
+        
+        # checks that the genome build is canonical
+        if 'assembly' in str(df_gen_build.type.loc[i]):
+            # check the stand orientation
+            if str(df_gen_build.strand.loc[i]) == "-1":
+                print('on reverse strand')
+                # generate a list of lrg star positions and a ver for genomic end possition
+                g_loc_end = df_gen_build.at[i,'g_end']
+                lrg_loc_s = []
+                # populate list of lrg possitions
+                for l in range(len(df_exon_rel.exon_no)):
+                    lrg_loc_s.append(df_exon_rel.start.loc[l])    
+                # loop through the lrg start list to calculate genomic pos for rev strand
+                # genomic end loc + 5001 - lrg start pos
+                exon_pos_s = [int(g_loc_end) + 5001 - int(lrg_loc_s[x]) for x in range(len(lrg_loc_s))]
+                df_exon_rel[(df_gen_build.Build.loc[i])+'_start'] = exon_pos_s
+            
+            elif str(df_gen_build.strand.loc[i]) == "1":
+                print('on Forward strand')
+                # generate a list of lrg star positions and a ver for genomic end possition 
+                g_loc_end = df_gen_build.at[i,'g_end']
+                lrg_loc_s = []
+                # populate list of lrg possitions
+                for l in range(len(df_exon_rel.exon_no)):
+                    lrg_loc_s.append(df_exon_rel.start.loc[l])    
+                # loop through the lrg start list to calculate genomic pos for rev strand
+                # genomic end loc + 5001 - lrg start pos
+                exon_pos_s = [int(g_loc_end) -5001 + int(lrg_loc_s[x]) for x in range(len(lrg_loc_s))]
+                df_exon_rel[(df_gen_build.Build.loc[i])+'_start'] = exon_pos_s
+
+               
+            else:
+                print("Problem! DNA should only have two strands, this has more, so cant be DNA")
+    return df_exon_rel
     ####################################################################
     #find1 = df_gen_build.iat[0,2]
     #print("selecting 1 cell:", find1)
@@ -187,11 +220,11 @@ def main(infile):
     genome_build = genome_loc(exon_data, checked)
     # genome_build is the df_gen_build dataframe
     exon_gen_pos = leg(genome_build, exon_data_with_seq)
-    print(exon_data)
+    #print(exon_data)
     print()
     print(exon_data_with_seq)
     print()
-    print(genome_build)
+    #print(genome_build)
 
     return exon_data
 
