@@ -41,8 +41,8 @@ def get_data(root):
     # loop through exons pulling out exon number, start and stop position
     for item in root.findall('./fixed_annotation/transcript/exon'):
         ex_label.append(item.attrib['label'])
-        ex_start.append(item[0].attrib['start'])
-        ex_end.append(int(item[0].attrib['end'])+1)
+        ex_start.append(int(item[0].attrib['start'])-1)
+        ex_end.append(int(item[0].attrib['end']))
         #ex_strand.append(item[0].attrib['strand'])
     
     # enter data from lists into pandas dataframe
@@ -133,7 +133,7 @@ def leg (df_gen_build, df_exon_rel):
                     lrg_loc_s.append(df_exon_rel.start.loc[l])    
                     lrg_loc_e.append(df_exon_rel.end.loc[l])
                 # loop through calculate genomic start pos for rev strand
-                exon_pos_s = [int(g_loc) - int(lrg_loc_s[x]) + 1 for x in range(len(lrg_loc_s))]
+                exon_pos_s = [int(g_loc) - int(lrg_loc_s[x]) for x in range(len(lrg_loc_s))]
                 df_exon_rel[(df_gen_build.Build.loc[i])+'_start'] = exon_pos_s
                 
                 # loop through calculate genomic pos for rev strand
@@ -154,10 +154,10 @@ def leg (df_gen_build, df_exon_rel):
                     lrg_loc_e.append(df_exon_rel.end.loc[l])
                     
                 # loop through calculate genomic start pos for rev strand
-                exon_pos_s = [int(g_loc) + int(lrg_loc_s[x]) - 1 for x in range(len(lrg_loc_s))]
+                exon_pos_s = [int(g_loc) + int(lrg_loc_s[x]) for x in range(len(lrg_loc_s))]
                 df_exon_rel[(df_gen_build.Build.loc[i])+'_start'] = exon_pos_s
                                 # loop through calculate genomic pos for rev strand
-                exon_pos_e = [int(g_loc) - int(lrg_loc_e[x]) - 1 for x in range(len(lrg_loc_s))]
+                exon_pos_e = [int(g_loc) + int(lrg_loc_e[x]) - 1 for x in range(len(lrg_loc_s))]
                 df_exon_rel[(df_gen_build.Build.loc[i])+'_end'] = exon_pos_e
                 
                 print('genLoc:', df_gen_build.Build.loc[i])
@@ -192,6 +192,6 @@ def main(infile):
 
     return exon_data
 
-main('LRG_132.xml') # NEED TO CHANGE SO NOT HARD CODED
+main('LRG_517.xml') # NEED TO CHANGE SO NOT HARD CODED
     
 
