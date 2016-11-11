@@ -42,7 +42,7 @@ def get_data(root):
     for item in root.findall('./fixed_annotation/transcript/exon'):
         ex_label.append(item.attrib['label'])
         ex_start.append(item[0].attrib['start'])
-        ex_end.append(item[0].attrib['end'])
+        ex_end.append(int(item[0].attrib['end'])+1)
         #ex_strand.append(item[0].attrib['strand'])
     
     # enter data from lists into pandas dataframe
@@ -116,22 +116,20 @@ def leg (df_gen_build, df_exon_rel):
     '''Location of Exome in Genome'''
     
     for i in range(len(df_gen_build.Build)):
-        print("moo")
-        
         # checks that the genome build is canonical
         if 'assembly' in str(df_gen_build.type.loc[i]):
             # check the stand orientation
             if str(df_gen_build.strand.loc[i]) == "-1":
                 print('on reverse strand')
                 # generate a list of lrg star positions and a ver for genomic end possition
-                g_loc_end = df_gen_build.at[i,'g_end']
+                g_loc_start = df_gen_build.at[i,'g_start']
                 lrg_loc_s = []
                 # populate list of lrg possitions
                 for l in range(len(df_exon_rel.exon_no)):
                     lrg_loc_s.append(df_exon_rel.start.loc[l])    
                 # loop through the lrg start list to calculate genomic pos for rev strand
                 # genomic end loc + 5001 - lrg start pos
-                exon_pos_s = [int(g_loc_end) + 5001 - int(lrg_loc_s[x]) for x in range(len(lrg_loc_s))]
+                exon_pos_s = [int(g_loc_start) + 5001 - int(lrg_loc_s[x]) for x in range(len(lrg_loc_s))]
                 df_exon_rel[(df_gen_build.Build.loc[i])+'_start'] = exon_pos_s
             
             elif str(df_gen_build.strand.loc[i]) == "1":
@@ -156,8 +154,6 @@ def leg2 (df_gen_build, df_exon_rel):
     '''Location of Exome in Genome'''
     
     for i in range(len(df_gen_build.Build)):
-        print("moo")
-        
         # checks that the genome build is canonical
         if 'assembly' in str(df_gen_build.type.loc[i]):
             # check the stand orientation
@@ -221,7 +217,8 @@ def main(infile):
     # genome_build is the df_gen_build dataframe
     exon_gen_pos = leg(genome_build, exon_data_with_seq)
     #print(exon_data)
-    print()
+    print('LRG id :',lrg_id)
+    print('Gene symbol :',symbol)
     print(exon_data_with_seq)
     print()
     #print(genome_build)
