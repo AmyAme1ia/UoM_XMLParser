@@ -1,0 +1,19 @@
+TO Do:
+
+    ask user for file location
+    use glob to locate files within the folder
+    if 1 file -> run checks and parser
+    if >1 file loop through and generate a dictionary K, V = {LRG ID, Gene symbol}
+    ask user to specify gene symbol - convert to UPPER
+    locate file than call get data function for that specific function 
+
+Limitations:
+	can’t glob files in downloads folder
+	does not take into consideration differences between genome builds
+
+Documents to include:
+	example of file out put
+	readme file
+	list test files
+	document testing criteria
+
