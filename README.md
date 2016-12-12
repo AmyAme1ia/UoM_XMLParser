@@ -32,6 +32,7 @@ Parser output was confirmed of the exonic locations and sequence for GRC37 and G
 
 ## Limitations
 Identified limitations of FoxyParser include:
+
 •	Not currently accounting for sequence differences between genome builds. This limitation should be addressed in future iterations of FoxyParser. 
 •	Output file currently does not include:
   o	HGNC accession number
