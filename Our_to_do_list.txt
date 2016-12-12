@@ -1,5 +1,5 @@
 TO Do:
-
+Amy psudocode
     ask user for file location
     use glob to locate files within the folder
     if 1 file -> run checks and parser
