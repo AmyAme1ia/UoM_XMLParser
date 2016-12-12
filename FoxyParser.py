@@ -192,7 +192,7 @@ def output_to_file(name_base,df,t,lrg_id,symbol,chromosome,strand): # from main_
     # dictionary to translate strand coding from +/-1 to +/- n header
     strand_dict = {'1':'+','-1':'-'}
     # add a series of rows containing header information and empty columns to match the size of the main dataframe
-    df_head.loc[len(df_head.exon_no)] = ['#','LRG id :',lrg_id,'','','','','','']
+    df_head.loc[len(df_head.exon_no)] = ['#','LRG ID :',lrg_id,'','','','','','']
     df_head.loc[len(df_head.exon_no)] = ['#','Gene Symbol :',symbol,'','','','','','']
     df_head.loc[len(df_head.exon_no)] = ['#','Chromosome :',chromosome,'','','','','','']
     df_head.loc[len(df_head.exon_no)] = ['#','Strand :',strand_dict[strand],'','','','','','']
