@@ -8,13 +8,13 @@ FoxyParser was written by Amy Slater and Matthew Wherlock (2016)
 ## Usage
 ### Requirements
 To run FoxyParser you will need:
-•	Python version 3.5
+* Python version 3.5
 With the following python packages installed:
-•	xml.etree.ElementTree
-•	pandas
-•	warnings
-•	os
-•	glob
+* xml.etree.ElementTree
+* pandas
+*	warnings
+*	os
+* glob
 
 ### Instructions
 TO DO: Add in instructions
@@ -28,18 +28,18 @@ In the output .csv file LRG ID, gene symbol, chromosome, strand direction and tr
 
 ## Testing
 TO DO: Add in testing criteria/ conditions. 
-Parser output was confirmed of the exonic locations and sequence for GRC37 and GRCh38 by comparison to UCSC (https://genome.ucsc.edu/) for each genome build for LRG_62 (FOXP3 and LRG_517 (RB1).
+Parser output was confirmed of the exonic locations and sequence for GRC37 and GRCh38 by comparison to UCSC (https://genome.ucsc.edu/) for each genome build for LRG_62 (_FOXP3_) and LRG_517 (_RB1_).
 
 ## Limitations
 Identified limitations of FoxyParser include:
 
-•	Not currently accounting for sequence differences between genome builds. This limitation should be addressed in future iterations of FoxyParser. 
-•	Output file currently does not include:
-  o	HGNC accession number
-  o	Information regarding intronic length or sequence
-  o	Information regarding transcripts RefSeq ID, length or sequence
-  o	Information regarding the protein. Including ID number, length or sequence
-•	Glob module cannot identify and list files located within the ‘Downloads’ file. Workaround: ensure FoxyParser and downloaded LRG files are not located within the ‘Downloads’ folder prior to running the tool. 
+*	Not currently accounting for sequence differences between genome builds. This limitation should be addressed in future iterations of FoxyParser. 
+*	Output file currently does not include:
+  *	HGNC accession number
+  *	Information regarding intronic length or sequence
+  *	Information regarding transcripts RefSeq ID, length or sequence
+  *	Information regarding the protein. Including ID number, length or sequence
+*	Glob module cannot identify and list files located within the ‘Downloads’ file. Workaround: ensure FoxyParser and downloaded LRG files are not located within the ‘Downloads’ folder prior to running the tool. 
 
 
 ## Further Development
@@ -51,4 +51,4 @@ Further functionality could also be added by permitting users to input a value o
 See separate licencing documentation. 
 
 ## Parser naming
-FoxyParser was named following original testing on gene FOXP3
+FoxyParser was named following original testing on gene _FOXP3_
