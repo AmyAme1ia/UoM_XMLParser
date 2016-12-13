@@ -2,7 +2,7 @@
 A .xml file parser developed to extract exonic information from a Locus Reference Genomic file (LRG file), outputting a .cvs file for each transcript.   
 Further information regarding LRG files and options to download LRG files may be found at http://www.lrg-sequence.org/
 
-##Authors
+## Authors
 FoxyParser was written by Amy Slater and Matthew Wherlock (2016)
 
 ## Usage
