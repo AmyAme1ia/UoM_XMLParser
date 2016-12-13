@@ -183,8 +183,7 @@ def output_to_file(name_base,df,t,lrg_id,symbol,chromosome,strand): # from main_
     current_dir = os.path.dirname(os.path.realpath(__file__))
     # name new folder to contain output files based on LRG id
     new_dir_name = name_base+'_output'
-    #output_filename = name_base+'_.csv'
-    output_filename = name_base+'_'+t+'.csv' # from main_looper
+    output_filename = name_base+'_'+t+'.tsv' # from main_looper
     
     # create header for output files containing basic summary data - dummy headers to allow concatenation with main dataframe
     df_head = pd.DataFrame(columns=['exon_no','start','end','exon_length','GRCh37.p13_start','GRCh37.p13_end','GRCh38.p7_start','GRCh38.p7_end','seq'])
