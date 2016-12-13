@@ -8,7 +8,7 @@ FoxyParser was written by Amy Slater and Matthew Wherlock (2016)
 ## Usage
 ### Requirements
 To run FoxyParser you will need:
-* Python version 3.5
+* Python version 3.5  
 With the following python packages installed:
 * xml.etree.ElementTree
 * pandas
