@@ -29,7 +29,8 @@ In the output .csv file LRG ID, gene symbol, chromosome, strand direction and tr
 
 ## Testing
 TO DO: Add in testing criteria/ conditions.   
-Parser output was confirmed of the exonic locations and sequence for GRC37 and GRCh38 by comparison to UCSC (https://genome.ucsc.edu/) for each genome build for LRG_62 (_FOXP3_) and LRG_517 (_RB1_).
+  
+The outputted exonic locations and sequence for genome builds GRC37 and GRCh38 were confirmed by comparison to UCSC (https://genome.ucsc.edu/) for each genome build for LRG_62 (_FOXP3_) and LRG_517 (_RB1_).
 
 ## Limitations
 Identified limitations of FoxyParser include:
