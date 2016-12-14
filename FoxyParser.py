@@ -145,11 +145,11 @@ def leg (df_gen_build, df):
                     lrg_loc_e.append(df.end.loc[l])
                 # loop through calculate genomic start pos for rev strand
                 exon_pos_s = [int(g_loc) - int(lrg_loc_s[x]) for x in range(len(lrg_loc_s))]
-                df_exon_rel[(df_gen_build.Build.loc[i])+'_start'] = exon_pos_s
+                df[(df_gen_build.Build.loc[i])+'_start'] = exon_pos_s
                 
                 # loop through calculate genomic end pos for rev strand
                 exon_pos_e = [int(g_loc) - int(lrg_loc_e[x]) + 1 for x in range(len(lrg_loc_s))]
-                df_exon_rel[(df_gen_build.Build.loc[i])+'_end'] = exon_pos_e
+                df[(df_gen_build.Build.loc[i])+'_end'] = exon_pos_e
             
             elif str(df_gen_build.strand.loc[i]) == "1":
                 print('on Forward strand')
