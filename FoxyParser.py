@@ -133,11 +133,11 @@ def leg (df_gen_build, df):
             
             if str(df_gen_build.strand.loc[i]) == "-1":
                 print('on reverse strand')
-                # generate a list of lrg star positions and a ver for genomic end possition
+                # generate a list of genomic lrg start and end position
                 g_loc = df_gen_build.at[i,'g_end']
                 lrg_loc_s = []
                 lrg_loc_e = []
-                #g_loc_e = df_gen_build.at[i,'g_start']
+                # g_loc_e = df_gen_build.at[i,'g_start']
                 
                 # populate list of lrg possitions
                 for l in range(len(df.exon_no)):
@@ -147,7 +147,7 @@ def leg (df_gen_build, df):
                 exon_pos_s = [int(g_loc) - int(lrg_loc_s[x]) for x in range(len(lrg_loc_s))]
                 df_exon_rel[(df_gen_build.Build.loc[i])+'_start'] = exon_pos_s
                 
-                # loop through calculate genomic pos for rev strand
+                # loop through calculate genomic end pos for rev strand
                 exon_pos_e = [int(g_loc) - int(lrg_loc_e[x]) + 1 for x in range(len(lrg_loc_s))]
                 df_exon_rel[(df_gen_build.Build.loc[i])+'_end'] = exon_pos_e
             
