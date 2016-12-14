@@ -79,13 +79,13 @@ def add_sequence(df,root):
     # add temporary indexing columns to df for sequence slice
     df['int_start'] = df.start.astype(int)
     df['int_end'] = df.end.astype(int)
-    # calulate exon length and add to dataframe
+    # calculate  exon length and add to dataframe
     df['exon_length'] = df['end'] - df['start']
     df['seq'] = [(genomic_sequence[(df.int_start.loc[i]):(df.int_end.loc[i])]) for i in range(len(df.start))]
     # remove intermediary indexing columns
     del df['int_start']
     del df['int_end']
-    # check that sequence legth matches the exon length
+    # check that sequence length matches the exon length
     for i in range(len(df.start)):
         len(df.seq.loc[i]) == df.exon_length.loc[i],
         "Sequence length doesn't match exon length"
@@ -93,7 +93,7 @@ def add_sequence(df,root):
 
 def genome_loc(df, root):
     ''' Extract exome genome cordinates for build GRC37'''
-    # Generate list to extract inofrmation of genome build, chromosome, genomic start and stop possition and build assembly type
+    # Generate list to extract information of genome build, chromosome, genomic start and stop possition and build assembly type
     GRCh_build = []
     GRCh_chr = []
     GRCh_start = []
@@ -101,7 +101,7 @@ def genome_loc(df, root):
     GRCh_strand = []
     GRCh_type = []
     
-    # define an empty dataframe to accept genome build informtion from xml file
+    # define an empty dataframe to accept genome build information from xml file
     df_gen_build = pd.DataFrame(columns=['Build','Chr', 'g_start','g_end', 'strand', 'type'])
     
     # loop through LRG file to pull out genomic information
@@ -139,7 +139,7 @@ def leg (df_gen_build, df):
                 lrg_loc_e = []
                 # g_loc_e = df_gen_build.at[i,'g_start']
                 
-                # populate list of lrg possitions
+                # populate list of lrg positions
                 for l in range(len(df.exon_no)):
                     lrg_loc_s.append(df.start.loc[l])    
                     lrg_loc_e.append(df.end.loc[l])
@@ -159,7 +159,7 @@ def leg (df_gen_build, df):
                 lrg_loc_s = []
                 lrg_loc_e = []
                 
-                # populate list of lrg possitions
+                # populate list of lrg positions
                 for l in range(len(df.exon_no)):
                     lrg_loc_s.append(df.start.loc[l])  
                     lrg_loc_e.append(df.end.loc[l])
@@ -240,7 +240,7 @@ def main(infile):
     #return df_genomic_coords,lrg_id,symbol,chromosome
     pass
     
-    
+    # Debugging print statements
     #print('LRG id :',lrg_id)
     #print('Gene symbol :',symbol)
     #print(exon_data_with_seq)
@@ -249,6 +249,6 @@ def main(infile):
 
     #return exon_data
 
-main('LRG_517.xml') # NEED TO CHANGE SO NOT HARD CODED
+main('LRG_62.xml') # NEED TO CHANGE SO NOT HARD CODED
     
 
