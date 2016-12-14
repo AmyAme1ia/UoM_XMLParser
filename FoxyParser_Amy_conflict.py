@@ -4,6 +4,7 @@ import pandas as pd
 import warnings
 import os
 import glob
+from builtins import input
 
 
 warnings.filterwarnings('ignore')
@@ -333,7 +334,7 @@ def LRGdict(xmlfiles):
         except:
             print(f + 'failed')
     print(len(dSelection))
-    return(search(dSelection, 'RB1'))
+    return(choice(dSelection))
                             
 '''def search(dsel):                            
     test = "RB1"
@@ -342,6 +343,11 @@ def LRGdict(xmlfiles):
         print(splitted)
         #if splitted == test'''
 # print(k) '
+def choice(dsel):
+    name = input('test ')
+    print(name)
+    return None
+    # return(search(dSelection, 'RB1')) 
 
 def search(dsel, searchFor):
     for k in dsel:
