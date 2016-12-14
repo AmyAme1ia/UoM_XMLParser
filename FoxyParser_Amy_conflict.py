@@ -22,6 +22,7 @@ def xml_checker(file_name):
     '''Runs a check to confirm a .xml file has been entered'''
     assert file_name.endswith('.xml'), ' wrong file type entered'
     return(check_file(file_name))
+   
     
 def check_file(file_name):
     ''' check the input file is an LRG and return root '''    
@@ -30,10 +31,11 @@ def check_file(file_name):
     assert root.tag == 'lrg', 'Input file must be an LRG'
     return(check_public(root))
 
+
 def check_public(root):
     ''' Checks that the LRG file is a public file. for pending files issues a warning regarding completeness'''
     if root.findall("./fixed_annotation/*")[4].tag == 'source':
-        print('done checks')
+        print('The selected LRG file is classified as public')
         return(root)
     else:
         print ('Warning! this is a pending LRG file and may be subject to modification')
@@ -266,41 +268,72 @@ def main(infile):
     #return exon_data
 
 
-def PathCheck(filepath):
-    '''check that user has entered a valid file path'''
+def PathCheck(fp):
+    '''check that user has entered a valid directory/file path'''
     valid = False
     while not valid:
-        if not os.path.isdir(filepath):
+        # if user enters file path with file extention, test that it is an xml here. 
+        if os.path.isfile(fp):
+            if fp.endswith('.xml'):
+                # print(filepath)
+                valid = True
+                # check to confirm file entered is an .xml
+                assert fp.endswith('.xml'), ' wrong file type entered'
+                # check the input file is an LRG and pass to def check_public(root)  
+                tree = ET.parse(fp)
+                root = tree.getroot()
+                assert root.tag == 'lrg', 'Input file must be an LRG'
+                return(check_public(root))
+
+        # if user enters directory check that it is in the correct format, then pass to LRGdict    
+        elif not os.path.isdir(fp):
+            print(fp)
             # check if the file path is flanked by ", due to copying, a feature observed in windows
-            if filepath.endswith('"'):
-                print('File path may not be flanked by " please remove to proceed.')
+            if fp.endswith('"'):
+                print('File path may not be flanked by " please remove and try again.')
+                valid = True
+                exit()
             else:
                 print('File path not found')
-        else: # if valid file path, check entry ends with / and append *.xml to search for xml files only.
-            if filepath.endswith('/'):
-                xmlfiles = filepath + ('*.xml')
-            elif not filepath.endswith('/'):
-                xmlfiles = filepath + ('/*.xml')
+                valid = True
+                exit()
+        # if valid file path, check entry ends with / then append *.xml to search for xml files only.
+        else: 
+            if fp.endswith('/'):
+                xmlfiles = fp + ('*.xml')
+            elif not fp.endswith('/'):
+                xmlfiles = fp + ('/*.xml')
+            print('passed file path check')
             valid = True
-            print('end')
-    return(LRGdict(xmlfiles))
+            return(LRGdict(xmlfiles))
+
 
 def LRGdict(xmlfiles):
-    # Generate a list of xml files
+    '''Generate a dictionary of xml file ID and genes if the user supplies a folder'''
+    # Generate a list of .xml files
     filelist = glob.glob(xmlfiles)
-    # Check that directory contains xml files
+    # Check that list contains at least one .xml files
     assert len(filelist) > 1, ' No xml files where identified within the specified directory'
     # print(filelist)
-    
+    print(len(filelist))
     # open files 1) to check they are correct xml files and 2) to generate a dictionary of LRG IDs and Gene sysmbol.
     selection = {}
     for f in filelist:
+        # check if xml file is an LRG file
         try: 
+            tree = ET.parse(f) 
+            root = tree.getroot()
+            if root.tag == 'lrg':
+                print('try passed')
+        except:
+            print(f + 'failed')
         
-# select via gene option
-# select via LRG number option
+        # select via gene option
+        # select via LRG number option
+        
+        # try except for xml test 
 
-    return(LRGoption)
+    return
 
 
 
@@ -309,5 +342,6 @@ filepath = '/Users/Amy/Desktop/LRG_public_xml_files/'
 # file pathshould be entered in the following format: /Users/user/...
 
 # main('LRG_517.xml') # NEED TO CHANGE SO NOT HARD CODED
+# Pass filepath(fp) to the Pathchecker function
 PathCheck(filepath)  
 
