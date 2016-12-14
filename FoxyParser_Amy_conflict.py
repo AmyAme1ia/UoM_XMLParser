@@ -317,23 +317,43 @@ def LRGdict(xmlfiles):
     # print(filelist)
     print(len(filelist))
     # open files 1) to check they are correct xml files and 2) to generate a dictionary of LRG IDs and Gene sysmbol.
-    selection = {}
+    dSelection = {} # filepath: LRGID, Gene Symbol
     for f in filelist:
         # check if xml file is an LRG file
         try: 
             tree = ET.parse(f) 
             root = tree.getroot()
             if root.tag == 'lrg':
-                print('try passed')
+                # print('try passed')
+                # find LRG id and gene symbol for each file, generate a list.
+                lst =[(root.findall('./fixed_annotation/id')[0].text), (root.findall('./updatable_annotation/annotation_set/features/gene/symbol')[0].attrib['name'])]
+                #print(lst)
+                #add to dictionary
+                dSelection[f] = lst
         except:
             print(f + 'failed')
-        
-        # select via gene option
-        # select via LRG number option
-        
-        # try except for xml test 
+    print(len(dSelection))
+    return(search(dSelection, 'RB1'))
+                            
+'''def search(dsel):                            
+    test = "RB1"
+    for k, v in dsel.items():
+        splitted = [v.split(',')[0] for i in v] 
+        print(splitted)
+        #if splitted == test'''
+# print(k) '
 
-    return
+def search(dsel, searchFor):
+    for k in dsel:
+        for v in dsel[k]:
+            if searchFor in v:
+                print(k)
+                return k
+                
+    return None
+
+    
+    # print(list(dsel.keys())[list(dsel.values()).index('*' + test)])
 
 
 
