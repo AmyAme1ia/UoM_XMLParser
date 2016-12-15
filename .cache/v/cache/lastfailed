@@ -1,3 +1,3 @@
 {
-  "test/test_foxy.py::test_genome_loc": true
+  "test/test_foxy.py::test_output_to_file": true
 }

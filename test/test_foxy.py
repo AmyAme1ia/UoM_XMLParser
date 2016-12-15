@@ -7,6 +7,9 @@ To run tests: pytest
 import pandas as pd
 import xml.etree.ElementTree as ET
 from pandas.util.testing import assert_frame_equal
+import filecmp
+import os
+import shutil
 
 # set truthset variables for testing based on example LRG
 FILENAME = 'LRG_517.xml'
@@ -23,6 +26,10 @@ DF1 = pd.read_csv('test/DF_1.tsv', sep='\t')
 DF2 = pd.read_csv('test/DF_2.tsv', sep='\t')
 DF3 = pd.read_csv('test/DF_3.tsv', sep='\t')
 DF4 = pd.read_csv('test/DF_4.tsv', sep='\t')
+T = 't1'
+OUTDIRNAME = 'LRG_517_output'
+OUTDIR = './LRG_517_output'
+TESTFILE = 'LRG_517_t1.tsv'
 
 def test_xml_checker():
     assert FILENAME.endswith('.xml')
@@ -63,7 +70,6 @@ def test_get_data():
     for i in range(len(ex_no)):
         df.loc[df.shape[0]] = [ex_no[i],ex_start[i],ex_end[i]]
     df.exon_no = pd.to_numeric(df.exon_no)    
-    return df
     assert_frame_equal(df, DF1, check_dtype=False)
     
 def test_add_sequence():
@@ -83,7 +89,7 @@ def test_add_sequence():
     # check that sequence length matches the exon length
     for i in range(len(df.start)):
         len(df.seq.loc[i]) == df.exon_length.loc[i],
-        "Sequence length doesn't match exon length"
+        "Sequence length doesn't match exon length"  
     assert_frame_equal(df, DF2)
 
 def test_genome_loc():
@@ -104,4 +110,89 @@ def test_genome_loc():
         GRCh_strand.append(item.attrib['strand'])
     for i in range(len(GRCh_build)):
         df_gen_build.loc[df_gen_build.shape[0]] = [GRCh_build[i], GRCh_chr[i], GRCh_start[i], GRCh_end[i],GRCh_strand[i], GRCh_type[i]]
-    assert_frame_equal(df_gen_build, DF3, check_dtype=False)
+
+    df_gen_build.Chr = pd.to_numeric(df_gen_build.Chr)
+    df_gen_build.g_start = pd.to_numeric(df_gen_build.g_start)
+    df_gen_build.g_end = pd.to_numeric(df_gen_build.g_end)
+    df_gen_build.strand = pd.to_numeric(df_gen_build.strand)
+    assert_frame_equal(df_gen_build, DF3)
+    
+def test_leg():
+    df_gen_build = DF3
+    df = DF2
+    for i in range(len(df_gen_build.Build)):
+        # checks that the genome build is canonical
+        if 'assembly' in str(df_gen_build.type.loc[i]):
+            # check the stand orientation
+            
+            if str(df_gen_build.strand.loc[i]) == "-1":
+                # generate a list of genomic lrg start and end position
+                g_loc = df_gen_build.at[i,'g_end']
+                lrg_loc_s = []
+                lrg_loc_e = []
+                # g_loc_e = df_gen_build.at[i,'g_start']
+                
+                # populate list of lrg positions
+                for l in range(len(df.exon_no)):
+                    lrg_loc_s.append(df.start.loc[l])    
+                    lrg_loc_e.append(df.end.loc[l])
+                # loop through calculate genomic start pos for rev strand
+                exon_pos_s = [int(g_loc) - int(lrg_loc_s[x]) for x in range(len(lrg_loc_s))]
+                df[(df_gen_build.Build.loc[i])+'_start'] = exon_pos_s
+                
+                # loop through calculate genomic end pos for rev strand
+                exon_pos_e = [int(g_loc) - int(lrg_loc_e[x]) + 1 for x in range(len(lrg_loc_s))]
+                df[(df_gen_build.Build.loc[i])+'_end'] = exon_pos_e
+            
+            elif str(df_gen_build.strand.loc[i]) == "1":
+                
+                # generate a list of lrg star positions and a ver for genomic end possition 
+                g_loc = df_gen_build.at[i,'g_start']
+                lrg_loc_s = []
+                lrg_loc_e = []
+                
+                # populate list of lrg positions
+                for l in range(len(df.exon_no)):
+                    lrg_loc_s.append(df.start.loc[l])  
+                    lrg_loc_e.append(df.end.loc[l])
+                    
+                # loop through calculate genomic start pos for rev strand
+                exon_pos_s = [int(g_loc) + int(lrg_loc_s[x]) for x in range(len(lrg_loc_s))]
+                df[(df_gen_build.Build.loc[i])+'_start'] = exon_pos_s
+                                # loop through calculate genomic pos for rev strand
+                exon_pos_e = [int(g_loc) + int(lrg_loc_e[x]) - 1 for x in range(len(lrg_loc_s))]
+                df[(df_gen_build.Build.loc[i])+'_end'] = exon_pos_e
+               
+            else:
+                print("Problem! DNA should only have two strands, this has more, so cant be DNA")    
+    assert_frame_equal(df, DF4)
+    
+def test_output_to_file():
+    name_base = LRG_ID+'_test'
+    df = DF4
+    current_dir = os.path.dirname(os.path.realpath(__file__))
+    new_dir_name = name_base+'_output'
+    output_filename = name_base+'_'+T+'.tsv' # from main_looper
+    df_head = pd.DataFrame(columns=['exon_no','start','end','exon_length','GRCh37.p13_start','GRCh37.p13_end','GRCh38.p7_start','GRCh38.p7_end','seq'])
+    strand_dict = {'1':'+','-1':'-'}
+    df_head.loc[len(df_head.exon_no)] = ['#','LRG ID :',LRG_ID,'','','','','','']
+    df_head.loc[len(df_head.exon_no)] = ['#','Gene Symbol :',SYMBOL,'','','','','','']
+    df_head.loc[len(df_head.exon_no)] = ['#','Chromosome :',CHROMOSOME,'','','','','','']
+    df_head.loc[len(df_head.exon_no)] = ['#','Strand :',strand_dict[STRAND],'','','','','','']
+    df_head.loc[len(df_head.exon_no)] = ['#','Transcript number :',T,'','','','','','']
+    df_head.loc[len(df_head.exon_no)] = ['#','','','','','','','','']
+    df_head.loc[len(df_head.exon_no)] = ['# exon_no','start','end','exon_length','GRCh37.p13_start','GRCh37.p13_end','GRCh38.p7_start','GRCh38.p7_end','seq']
+    df = df[['exon_no','start','end','exon_length','GRCh37.p13_start','GRCh37.p13_end','GRCh38.p7_start','GRCh38.p7_end','seq']]
+    df['start'] = df['start'].astype(int)
+    df['end'] = df['end'].astype(int)
+    df['exon_length'] = df['exon_length'].astype(int)
+    df = pd.concat([df_head,df],axis=0)
+    if not os.path.exists(os.path.join(current_dir,new_dir_name)):
+        os.makedirs(new_dir_name)
+    df.to_csv(os.path.join(os.path.join(current_dir,'test',new_dir_name),output_filename),sep='\t',index=False,header=False)
+    #assert namebase == OUTFILE
+    #assert new_dir_name == OUTDIR
+    #assert filecmp.cpm(os.path.join(os.path.join(current_dir,new_dir_name)),output_filename,TESTFILE)
+    
+    # this line is needed to reset the test
+    shutil.rmtree('test/LRG_517_test_output')

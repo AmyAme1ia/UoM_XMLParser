@@ -37,7 +37,8 @@ def get_summary_data(root):
     # find LRG id for gene
     lrg_id = root.findall('./fixed_annotation/id')[0].text
     # find gene symbol
-    symbol = root.findall('./updatable_annotation/annotation_set/features/gene/symbol')[0].attrib['name']
+    symbol = root.findall('./updatable_annotation/*[@type="lrg"]/lrg_locus')[0].text
+    
     # find chromosome
     chromosome  = 'chr'+root.findall('./updatable_annotation/annotation_set/mapping')[0].attrib['other_name']
     # get information about strand
@@ -47,11 +48,6 @@ def get_summary_data(root):
 
 def get_data(root,transcript):
     ''' extract data from xml and store in a pandas dataframe (and gather other variables) '''    
-    # find LRG id for gene
-    lrg_id = root.findall('./fixed_annotation/id')[0].text
-    # find gene symbol
-    symbol = root.findall('./updatable_annotation/annotation_set/features/gene/symbol')[0].attrib['name']
-    
     # define an empty dataframe to accept data
     df = pd.DataFrame(columns=['exon_no','start','end'])
     #define empty lists as an intermediary data store
@@ -68,7 +64,8 @@ def get_data(root,transcript):
     # populate dataframe from lists
     for i in range(len(ex_no)):
         df.loc[df.shape[0]] = [ex_no[i],ex_start[i],ex_end[i]]  
-    return lrg_id, symbol, df
+    #return lrg_id, symbol, df
+    return df
 
 def add_sequence(df,root):
     ''' find genomic sequence and length for each exon '''
@@ -226,7 +223,8 @@ def main(infile):
     for t in transcripts:
         for transcript in checked.findall('./fixed_annotation/*[@name]'):
             if transcript.attrib['name'] == t:
-                lrg_id, symbol, exon_data = get_data(checked,transcript)
+                #lrg_id, symbol, exon_data = get_data(checked,transcript)
+                exon_data = get_data(checked,transcript)
                 # add the exon lengths and sequences to the growing df
                 exon_data_with_seq = add_sequence(exon_data,checked)
 
