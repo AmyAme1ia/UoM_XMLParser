@@ -12,7 +12,7 @@ warnings.filterwarnings('ignore')
 # User to input file or directory path 
 def usrinput1():
     '''obtains inital user input used to locate file or dir path'''
-    fpath = get_input("\nPlease enter an LRG file or directory path in the following format: \nAs a filepath: \..\..\..\LRG_public_xml_files\\file \nOr as directory path: \..\..\..\LRG_public_xml_files \n--> ")
+    fpath = get_input("\nPlease enter an LRG file or directory path. \n--> ")
     # check the user has input an arg
     assert len(fpath) >1, 'Insufficient input entered. Must enter a file or dir path'
     return main(fpath)    
@@ -110,7 +110,7 @@ def search(dSel, searchFor):
             # re-open LRG file so FoxyParser can do its job
             tree = ET.parse(outputfile) 
             root = tree.getroot()
-            return(check_public(root))                           
+            return(check_public(root, tree))                           
     if not outputfile:
         # if input string not found loop back to choice() to allow new input
         print('\nInput not found. Please check and try again')
@@ -138,6 +138,12 @@ def get_summary_data(root):
     # find LRG id for gene
     lrg_id = root.findall('./fixed_annotation/id')[0].text
     # find gene symbol
+   
+    #################################################################
+    # annotation = tree.find("updatable_annotation/annotation_set[@type='lrg']")
+    # gene = (annotation.find('lrg_locus').text)
+    #################################################################
+    
     symbol = root.findall('./updatable_annotation/annotation_set/features/gene/symbol')[0].attrib['name']
     # find chromosome
     chromosome  = 'chr'+root.findall('./updatable_annotation/annotation_set/mapping')[0].attrib['other_name']
