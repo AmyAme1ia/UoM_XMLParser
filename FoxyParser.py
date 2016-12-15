@@ -1,29 +1,130 @@
 # Python 3.5
+import  __future__ 
 import xml.etree.ElementTree as ET
 import pandas as pd
 import warnings
-warnings.filterwarnings('ignore')
 import os
+import glob
+import sys
+warnings.filterwarnings('ignore')
 
-def xml_checker(file_name):
-    '''Runs a check to confirm a .xml file has been entered'''
-    assert file_name.endswith('.xml'), ' wrong file type entered'
-    return(check_file(file_name))
+
+# User to input file or directory path 
+def usrinput1():
+    '''obtains inital user input used to locate file or dir path'''
+    fpath = get_input("\nPlease enter an LRG file or directory path in the following format: \nAs a filepath: \..\..\..\LRG_public_xml_files\\file \nOr as directory path: \..\..\..\LRG_public_xml_files \n--> ")
+    # check the user has input an arg
+    assert len(fpath) >1, 'Insufficient input entered. Must enter a file or dir path'
+    return main(fpath)    
     
-def check_file(file_name):
-    ''' check the input file is an LRG and return root '''    
-    tree = ET.parse(file_name)
-    root = tree.getroot()
-    assert root.tag == 'lrg', 'Input file must be an LRG'
-    return(check_public(root))
+    
+def PathCheck(fp):
+    '''checks that user has entered a valid directory/file path'''
+    valid = False
+    while not valid:
+        # if user enters file path with file extention, test that it is an xml here. 
+        if os.path.isfile(fp):
+            if fp.endswith('.xml'):
+                # print(filepath)
+                valid = True
+                # check to confirm file entered is an .xml
+                assert fp.endswith('.xml'), ' wrong file type entered'
+                # check the input file is an LRG and pass to def check_public(root)  
+                tree = ET.parse(fp)
+                root = tree.getroot()
+                assert root.tag == 'lrg', 'Input file must be an LRG'
+                return(check_public(root))
 
+        # if user enters directory check that it is in the correct format, then pass to LRGdict    
+        elif not os.path.isdir(fp):
+            print(fp)
+            # check if the file path is flanked by ", due to copying, a feature observed in windows
+            if fp.endswith('"'):
+                print('File path may not be flanked by " please remove and retry.')
+                valid = True
+                exit()
+            else:
+                print('File path not found')
+                valid = True
+                exit()
+        # if valid file path, check entry ends with / then append *.xml to search for xml files only.
+        else: 
+            if fp.endswith('/'):
+                xmlfiles = fp + ('*.xml')
+            elif not fp.endswith('/'):
+                xmlfiles = fp + ('/*.xml')
+            print('passed file path check')
+            valid = True
+            return(LRGdict(xmlfiles))
+
+        
+def LRGdict(xmlfiles):
+    '''Generates a dictionary of .xml files LRG ID and gene symbols if the user supplied a folder'''
+    # Generate a list of .xml files only
+    filelist = glob.glob(xmlfiles)
+    # Check that list contains at least one .xml files
+    assert len(filelist) > 0, ' No xml files where identified within the specified directory'
+    # print(filelist)
+    print(str(len(filelist)) + " files identified")
+    # open files 1) to check they are correct xml files and 2) to generate a dictionary of LRG IDs and Gene sysmbol.
+    dSel = {} # filepath: LRGID, Gene Symbol
+    for f in filelist:
+        # check if xml file is an LRG file
+        try: 
+            tree = ET.parse(f) 
+            root = tree.getroot()
+            if root.tag == 'lrg':
+                # find LRG id and gene symbol for each file then generate a list.
+                # lst=[LRG ID, Gene Symbol]
+                annotation = tree.find("updatable_annotation/annotation_set[@type='lrg']")
+                lst =[(root.findall('./fixed_annotation/id')[0].text), (annotation.find('lrg_locus').text)]
+                #add to dictionary
+                dSel[f] = lst
+        except:
+            print(f + 'failed')
+    
+    # check dictionary is not null. If dictionary is null then no LRG files could be opened.
+    assert len(dSel) > 0, ' No LRG .xml files where able to be opened within the specified directory'
+    print(str(len(dSel)) + ' files confirmed to be LRG files')
+    return(choice(dSel))
+
+
+def choice(dSel):
+    '''Permits user to input ID or gene symbol of an LRG file '''
+    picked = get_input("\nPlease enter an LRG ID (as LRG_##) or an HGNC gene symbol. Else type exit \n--> ")
+    if 'exit' in picked.lower():
+       exit()
+    else:
+    # print name
+        return search(dSel, picked)
+    # return(search(dSelection, 'RB1')) 
+
+    
+def search(dSel, searchFor):
+    '''Uses users input to iterate over LRG dictionary keys'''
+    outputfile = ""
+    for k in dSel:
+        if searchFor in dSel[k]:
+            #variable used to check search has found an output
+            outputfile = k
+            # re-open LRG file so FoxyParser can do its job
+            tree = ET.parse(outputfile) 
+            root = tree.getroot()
+            return(check_public(root))                           
+    if not outputfile:
+        # if input string not found loop back to choice() to allow new input
+        print('\nInput not found. Please check and try again')
+        choice(dSel)         
+        return None
+
+    
 def check_public(root):
-    ''' Checks that the LRG file is a public file. for pending files issues a warning regarding completeness'''
+    '''Checks that the LRG file is a public file. for pending files issues a warning regarding completeness'''
     if root.findall("./fixed_annotation/*")[4].tag == 'source':
-        print('done checks')
+        print('\nThe selected LRG file is classified as public')
         return(root)
     else:
-        print ('Warning! this is a pending LRG file and may be subject to modification')
+        print ('\nWarning! this is a pending LRG file and may be subject to modification')
         return(root)
     
 def loop_transcripts(root):
@@ -214,10 +315,12 @@ def output_to_file(name_base,df,t,lrg_id,symbol,chromosome,strand): # from main_
 
 
 def main(infile):
-    '''launches main workflow for parsing LRG dtat from xml'''
-    # run checks on file type
-    checked = (xml_checker(infile)) 
-    # checked = root
+    '''launches main workflow for parsing LRG data from xml'''
+    # Intital user input triggers main() launch.
+    # Checks file path is vaild, file is an LRG and if public or pending.
+    # For valid directories, calls function to permit user to select LRG file by LRGID or Gene Symbol
+    checked = PathCheck(infile)
+    
     # get LRG id, gene symbol and chromosome from file
     lrg_id, symbol, chromosome, strand = get_summary_data(checked)
     # this should be a list of markers, eg ['t1','t2',...,'tn']
@@ -238,16 +341,18 @@ def main(infile):
                 print('Finished.  Please check the output folder') #.format(new_dir_name)
     #return df_genomic_coords,lrg_id,symbol,chromosome
     pass
-    
-    # Debugging print statements
-    #print('LRG id :',lrg_id)
-    #print('Gene symbol :',symbol)
-    #print(exon_data_with_seq)
-    #print()
-    #print(genome_build)
 
-    #return exon_data
-
-main('LRG_517.xml') # NEED TO CHANGE SO NOT HARD CODED
     
+# Intiates running of the code checking the python verion is use.
+if __name__ == "__main__":
+    # To support Python 2 and 3 input
+    # Default to Python 3's input()
+    get_input = input
+
+    # If this is Python 2, use raw_input()
+    if sys.version_info[:2] <= (2, 9):
+        get_input = raw_input
+        print('py2')
+    # run user input fuction usinf the correct iteration of input
+    usrinput1()
 
