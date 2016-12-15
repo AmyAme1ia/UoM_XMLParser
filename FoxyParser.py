@@ -138,18 +138,7 @@ def get_summary_data(root):
     # find LRG id for gene
     lrg_id = root.findall('./fixed_annotation/id')[0].text
     # find gene symbol
-<<<<<<< HEAD
     symbol = root.findall('./updatable_annotation/*[@type="lrg"]/lrg_locus')[0].text
-    
-=======
-   
-    #################################################################
-    # annotation = tree.find("updatable_annotation/annotation_set[@type='lrg']")
-    # gene = (annotation.find('lrg_locus').text)
-    #################################################################
-    
-    symbol = root.findall('./updatable_annotation/annotation_set/features/gene/symbol')[0].attrib['name']
->>>>>>> 7cd0b70f620e30f3c39098dc094ac8281019d663
     # find chromosome
     chromosome  = 'chr'+root.findall('./updatable_annotation/annotation_set/mapping')[0].attrib['other_name']
     # get information about strand
