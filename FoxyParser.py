@@ -67,7 +67,7 @@ def get_data(root,transcript):
             ex_end.append(int(record.attrib['end']))
     # populate dataframe from lists
     for i in range(len(ex_no)):
-        df.loc[df.shape[0]] = [ex_no[i],ex_start[i],ex_end[i]]
+        df.loc[df.shape[0]] = [ex_no[i],ex_start[i],ex_end[i]]  
     return lrg_id, symbol, df
 
 def add_sequence(df,root):
@@ -120,7 +120,6 @@ def genome_loc(df, root):
         df_gen_build.loc[df_gen_build.shape[0]] = [GRCh_build[i], GRCh_chr[i], GRCh_start[i], GRCh_end[i],GRCh_strand[i], GRCh_type[i]]
     
     print('done genome build')
-
     return df_gen_build
 
 def leg (df_gen_build, df):
@@ -174,7 +173,7 @@ def leg (df_gen_build, df):
                 print('genLoc:', df_gen_build.Build.loc[i])
                
             else:
-                print("Problem! DNA should only have two strands, this has more, so cant be DNA")
+                print("Problem! DNA should only have two strands, this has more, so cant be DNA")    
     return df
 
 def output_to_file(name_base,df,t,lrg_id,symbol,chromosome,strand): # from main_looper
@@ -249,6 +248,6 @@ def main(infile):
 
     #return exon_data
 
-main('LRG_62.xml') # NEED TO CHANGE SO NOT HARD CODED
+main('LRG_517.xml') # NEED TO CHANGE SO NOT HARD CODED
     
 
