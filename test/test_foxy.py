@@ -1,7 +1,7 @@
 '''
 test suite for FoxyParser.py
 Uses pytest - install with: pip install -U pytest
-To run tests: pytest
+To run tests, from the root directory type: pytest
 '''
 
 import pandas as pd
@@ -31,6 +31,7 @@ OUTDIRNAME = 'LRG_517_output'
 OUTDIR = './LRG_517_output'
 TESTFILE = 'LRG_517_t1.tsv'
 
+# unit tests for functions in FoxyParser.py
 def test_usrinput1():
     assert len(FILENAME) >1
 
