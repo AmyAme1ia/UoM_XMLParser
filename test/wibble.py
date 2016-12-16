@@ -21,8 +21,8 @@ DF3 = pd.read_csv('test/DF_3.tsv', sep='\t')
 DF4 = pd.read_csv('test/DF_4.tsv', sep='\t')
 T = 't1'
 OUTDIRNAME = 'LRG_517_output'
-OUTDIR = './LRG_517_output'
-TESTFILE = 'LRG_517_t1.tsv'
+OUTDIR = 'LRG_517_output'
+TESTFILE = 'LRG_517_output/LRG_517_t1.tsv'
 
 
 def test_output_to_file():
@@ -45,9 +45,12 @@ def test_output_to_file():
     df['end'] = df['end'].astype(int)
     df['exon_length'] = df['exon_length'].astype(int)
     df = pd.concat([df_head,df],axis=0)
+    
     if not os.path.exists(os.path.join(current_dir,new_dir_name)):
-        os.makedirs(new_dir_name)
+        os.makedirs(os.path.join(current_dir,new_dir_name))
     df.to_csv(os.path.join(os.path.join(current_dir,new_dir_name),output_filename),sep='\t',index=False,header=False)
-    assert namebase == OUTFILE
+    #assert name_base == OUTFILE
     assert new_dir_name == OUTDIR
-    #assert filecmp.cpm(os.path.join(os.path.join(current_dir,new_dir_name)),output_filename,TESTFILE)
+    assert filecmp.cmp(os.path.join(os.path.join(current_dir,new_dir_name,output_filename)),TESTFILE)
+
+test_output_to_file()
