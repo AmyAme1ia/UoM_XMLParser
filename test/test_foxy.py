@@ -31,13 +31,14 @@ OUTDIRNAME = 'LRG_517_output'
 OUTDIR = './LRG_517_output'
 TESTFILE = 'LRG_517_t1.tsv'
 
-def test_xml_checker():
-    assert FILENAME.endswith('.xml')
+def test_usrinput1():
+    assert len(FILENAME) >1
 
-def test_check_file():
+def test_PathCheck():
+    assert FILENAME.endswith('.xml')
     tree = ET.parse(FILENAME)
     root = tree.getroot()
-    assert root.tag == TAG
+    assert root.tag == 'lrg'
     
 def test_check_public():
     assert ROOT.findall("./fixed_annotation/*")[4].tag == 'source'
