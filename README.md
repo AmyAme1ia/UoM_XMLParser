@@ -60,4 +60,4 @@ Further functionality could also be added by permitting users to input a value o
 See separate licencing documentation. 
 
 ## Parser naming
-FoxyParser was named following original testing on gene _FOXP3_
+FoxyParser was named following original development and testing on gene _FOXP3_
