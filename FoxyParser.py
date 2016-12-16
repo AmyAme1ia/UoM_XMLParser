@@ -228,7 +228,7 @@ def leg (df_gen_build, df):
             # check the stand orientation
             
             if str(df_gen_build.strand.loc[i]) == "-1":
-                print('on reverse strand')
+                # print('on reverse strand')
                 # generate a list of genomic lrg start and end position
                 g_loc = df_gen_build.at[i,'g_end']
                 lrg_loc_s = []
@@ -247,7 +247,7 @@ def leg (df_gen_build, df):
                 df[(df_gen_build.Build.loc[i])+'_end'] = exon_pos_e
             
             elif str(df_gen_build.strand.loc[i]) == "1":
-                print('on Forward strand')
+                # print('on Forward strand')
                 
                 # generate a list of lrg star positions and a ver for genomic end possition 
                 g_loc = df_gen_build.at[i,'g_start']
@@ -266,7 +266,7 @@ def leg (df_gen_build, df):
                 exon_pos_e = [int(g_loc) + int(lrg_loc_e[x]) - 1 for x in range(len(lrg_loc_s))]
                 df[(df_gen_build.Build.loc[i])+'_end'] = exon_pos_e
                 
-                print('genLoc:', df_gen_build.Build.loc[i])
+                # print('genLoc:', df_gen_build.Build.loc[i])
                
             else:
                 print("Problem! DNA should only have two strands, this has more, so cant be DNA")    
