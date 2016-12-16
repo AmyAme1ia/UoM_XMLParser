@@ -233,7 +233,6 @@ def leg (df_gen_build, df):
                 g_loc = df_gen_build.at[i,'g_end']
                 lrg_loc_s = []
                 lrg_loc_e = []
-                # g_loc_e = df_gen_build.at[i,'g_start']
                 
                 # populate list of lrg positions
                 for l in range(len(df.exon_no)):
@@ -325,7 +324,6 @@ def main(infile):
     for t in transcripts:
         for transcript in checked.findall('./fixed_annotation/*[@name]'):
             if transcript.attrib['name'] == t:
-                #lrg_id, symbol, exon_data = get_data(checked,transcript)
                 exon_data = get_data(checked,transcript)
                 # add the exon lengths and sequences to the growing df
                 exon_data_with_seq = add_sequence(exon_data,checked)
@@ -333,10 +331,8 @@ def main(infile):
                 genome_build = genome_loc(exon_data, checked)
                 # genome_build is the df_gen_build dataframe
                 exon_gen_pos = leg(genome_build, exon_data_with_seq)
-                #print(exon_data)
                 output_to_file(lrg_id,exon_gen_pos,t,lrg_id,symbol,chromosome,strand)
                 print('Finished.  Please check the output folder') #.format(new_dir_name)
-    #return df_genomic_coords,lrg_id,symbol,chromosome
     pass
 
     

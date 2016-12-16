@@ -12,7 +12,7 @@ import os
 import shutil
 
 # set truthset variables for testing based on example LRG
-FILENAME = 'LRG_517.xml'
+FILENAME = 'LRG_files/LRG_517.xml'
 TAG = 'lrg'
 TRANSCRIPT_COUNT = 1
 LRG_ID = 'LRG_517'

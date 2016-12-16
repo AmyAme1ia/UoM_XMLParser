@@ -30,7 +30,13 @@ FoxyParser extracts the LRG ID, gene symbol, chromosome, strand direction, trans
 In the output .tsv file LRG ID, gene symbol, chromosome, strand direction and transcript number are displayed as a header. The exome co-ordinates for genome builds GRC37 and GRCh38, exome length and exonic sequence are displayed in tab separated format below the header.  
 
 ## Testing
-TO DO: Add in testing criteria/ conditions.   
+
+For future development, a series of unit tests are included in the `test/` folder.  Running the testing suite requires the pytest module to be installed.
+
+For installation:
+>`pip install -U pytest`
+
+To run the unit tests, simply type `pytest` from the root directory of this package.
   
 The outputted exonic locations and sequence for genome builds GRC37 and GRCh38 were confirmed by comparison to UCSC (https://genome.ucsc.edu/) for each genome build for LRG_62 (_FOXP3_) and LRG_517 (_RB1_).
 
