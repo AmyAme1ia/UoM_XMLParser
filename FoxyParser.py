@@ -110,7 +110,7 @@ def search(dSel, searchFor):
             # re-open LRG file so FoxyParser can do its job
             tree = ET.parse(outputfile) 
             root = tree.getroot()
-            return(check_public(root, tree))                           
+            return(check_public(root))                           
     if not outputfile:
         # if input string not found loop back to choice() to allow new input
         print('\nInput not found. Please check and try again')

@@ -37,14 +37,19 @@ The outputted exonic locations and sequence for genome builds GRC37 and GRCh38 w
 ## Limitations
 Identified limitations of FoxyParser include:
 
-*	Not currently accounting for sequence differences between genome builds. This limitation should be addressed in future iterations of FoxyParser. 
+*	Not currently accounting for sequence differences between genome builds. This limitation should be addressed in future iterations of FoxyParser.  
 *	Output file currently does not include:
   *	HGNC accession number
   *	Information regarding intronic length or sequence
   *	Information regarding transcripts RefSeq ID, length or sequence
   *	Information regarding the protein. Including ID number, length or sequence
 *	Glob module cannot identify and list files located within the ‘Downloads’ file. Workaround: ensure FoxyParser and downloaded LRG files are not located within the ‘Downloads’ folder prior to running the tool. 
+* Does not display to the user the LRG_ID and gene symbol of the .xml files identified in a directory. 
 
+## Assumptions
+* LRG files are down loaded locally.
+* LRG files are not located within the 'download' directory
+* User is aware of correct HGNC nomenclature or LRG ID for gene of intrest. 
 
 ## Further Development
 This code does not currently account for sequence variations between genome builds GRC37 and GRCh38. This information is present within the LRG.xml file and therefore could be extracted and included within the tsv output in future iterations of the parser.  
@@ -55,4 +60,4 @@ Further functionality could also be added by permitting users to input a value o
 See separate licencing documentation. 
 
 ## Parser naming
-FoxyParser was named following original testing on gene _FOXP3_
+FoxyParser was named following original development and testing on gene _FOXP3_
